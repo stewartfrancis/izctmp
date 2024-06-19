@@ -46,7 +46,7 @@ def _process_module_args(self, module_args, _templar, ds_name, task_vars, cics_d
     _remove_region_data_set_args(module_args, ds_name)
 
     if cics_data_sets_required:
-        _process_libraries_args(module_args, _templar, task_vars, "cics_data_sets", "sdfhload")
+        _process_libraries_args(self, module_args, _templar, task_vars, "cics_data_sets", "sdfhload")
         _remove_cics_data_set_args(module_args, "sdfhload")
     else:
         if module_args.get("cics_data_sets"):
@@ -95,6 +95,7 @@ def _process_region_data_set_args(self, module_args, _templar, ds_name, task_var
         updates = {
             ds_name: {
                 "dsn": _template_dsn(
+                    self,
                     _templar=_templar,
                     task_vars=task_vars,
                     var_name="data_set_name",
@@ -122,11 +123,12 @@ def _validate_data_set_length(data_set):
         raise ValueError("Data set: {0} is longer than 44 characters.".format(data_set))
 
 
-def _process_libraries_args(module_args, _templar, task_vars, lib_type, lib_ds_name):
+def _process_libraries_args(self, module_args, _templar, task_vars, lib_type, lib_ds_name):
     if _check_library_override(module_args, lib_type, lib_ds_name):
         pass
     elif _check_template(module_args, lib_type):
         module_args[lib_type][lib_ds_name] = _template_dsn(
+            self,
             _templar=_templar,
             task_vars=task_vars,
             var_name="lib_name",
@@ -138,7 +140,7 @@ def _process_libraries_args(module_args, _templar, task_vars, lib_type, lib_ds_n
     _validate_data_set_length(module_args[lib_type][lib_ds_name])
 
 
-def _template_dsn(_templar, task_vars, var_name, replace_val, template):
+def _template_dsn(self, _templar, task_vars, var_name, replace_val, template):
     cpy = task_vars.copy()
     cpy.update({var_name: replace_val})
 
