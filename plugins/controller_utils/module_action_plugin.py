@@ -144,14 +144,14 @@ def _template_dsn(self, _templar, task_vars, var_name, replace_val, template):
     cpy = task_vars.copy()
     cpy.update({var_name: replace_val})
 
-    self.logger.error(f"VARS: {{ cpy  }}" )
+    self.logger.error(f"VARS: { cpy  }" )
     x = _templar.copy_with_new_env(
         variable_start_string="<<",
         variable_end_string=">>",
         available_variables=cpy,
     ).template(template)
 
-    self.logger.error(f"AFTER: {{ x }}")
+    self.logger.error(f"AFTER: { x }")
 
     return x
 
