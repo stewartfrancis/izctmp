@@ -141,11 +141,17 @@ def _process_libraries_args(module_args, _templar, task_vars, lib_type, lib_ds_n
 def _template_dsn(_templar, task_vars, var_name, replace_val, template):
     cpy = task_vars.copy()
     cpy.update({var_name: replace_val})
-    return _templar.copy_with_new_env(
+
+    self.logger.error(f"VARS: {{ cpy  }}" )
+    x = _templar.copy_with_new_env(
         variable_start_string="<<",
         variable_end_string=">>",
         available_variables=cpy,
     ).template(template)
+
+    self.logger.error(f"AFTER: {{ x }}")
+
+    return x
 
 
 def _check_template(module_args, arg_dict):
